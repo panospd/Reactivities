@@ -65,7 +65,6 @@ namespace API
             });
 
             app.UseCors("CorsPolicy");
-            app.UseMvc();
         }
     }
 }
