@@ -1,6 +1,4 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
 import { Header, Icon, List } from 'semantic-ui-react';
 
 function App() {
