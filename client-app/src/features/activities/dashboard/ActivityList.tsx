@@ -4,9 +4,15 @@ import { Item, Button, Label, Segment } from 'semantic-ui-react';
 
 interface IProps {
   activities: IActivity[];
+  selectActivity: (id: string) => void;
+  deleteActivity: (id: string) => void;
 }
 
-export const ActivityList: React.FC<IProps> = ({ activities }) => {
+export const ActivityList: React.FC<IProps> = ({
+  activities,
+  selectActivity,
+  deleteActivity
+}) => {
   return (
     <Segment clearing>
       <Item.Group divided>
@@ -24,7 +30,18 @@ export const ActivityList: React.FC<IProps> = ({ activities }) => {
                     </div>
                   </Item.Description>
                   <Item.Extra>
-                    <Button floated="right" content="View" color="blue" />
+                    <Button
+                      floated="right"
+                      content="View"
+                      color="blue"
+                      onClick={() => selectActivity(id)}
+                    />
+                    <Button
+                      floated="right"
+                      content="Delete"
+                      color="red"
+                      onClick={() => deleteActivity(id)}
+                    />
                     <Label basic content={category} />
                   </Item.Extra>
                 </Item.Content>
