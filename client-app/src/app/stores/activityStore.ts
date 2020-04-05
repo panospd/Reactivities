@@ -58,12 +58,14 @@ class ActivityStore {
   @action loadActivity = async (id: string) => {
     let activity = this.getActivity(id);
 
+    console.log(activity);
+
     if (activity) {
       this.activity = activity;
     } else {
       try {
         this.loadingInitial = true;
-        activity = agent.Activities.details(id);
+        activity = await agent.Activities.details(id);
         runInAction('getting activity', () => {
           this.activity = activity;
         });
