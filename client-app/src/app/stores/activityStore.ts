@@ -58,8 +58,6 @@ class ActivityStore {
   @action loadActivity = async (id: string) => {
     let activity = this.getActivity(id);
 
-    console.log(activity);
-
     if (activity) {
       this.activity = activity;
     } else {
