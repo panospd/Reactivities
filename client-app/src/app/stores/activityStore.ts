@@ -2,6 +2,7 @@ import { observable, action, computed, configure, runInAction } from 'mobx';
 import { createContext, SyntheticEvent } from 'react';
 import { IActivity } from '../Models/activity';
 import agent from '../api/agent';
+import { history } from '../../index';
 
 configure({ enforceActions: 'always' });
 
@@ -20,12 +21,12 @@ class ActivityStore {
 
   groupActivitiesByDate(activities: IActivity[]) {
     const sortedActivities = activities.sort(
-      (a, b) => a.date!.getTime() - b.date!.getTime()
+      (a, b) => a.date.getTime() - b.date.getTime()
     );
 
     return Object.entries(
       sortedActivities.reduce((activities, activity) => {
-        const date = activity.date!.toISOString().split('T')[0];
+        const date = activity.date.toISOString().split('T')[0];
         activities[date] = activities[date]
           ? [...activities[date], activity]
           : [activity];
@@ -42,7 +43,7 @@ class ActivityStore {
 
       runInAction('loading activities', () => {
         activities.forEach(activity => {
-          activity.date = new Date(activity.date!);
+          activity.date = new Date(activity.date);
           this.activityRegistry.set(activity.id, activity);
         });
       });
@@ -60,6 +61,7 @@ class ActivityStore {
 
     if (activity) {
       this.activity = activity;
+      return activity;
     } else {
       try {
         this.loadingInitial = true;
@@ -68,8 +70,11 @@ class ActivityStore {
         runInAction('getting activity', () => {
           activity.date = new Date(activity.date);
           this.activity = activity;
+          this.activityRegistry.set(activity.id, activity);
           this.loadingInitial = false;
         });
+
+        return activity;
       } catch (error) {
         console.log(error);
         runInAction('get activity error', () => {
@@ -95,6 +100,8 @@ class ActivityStore {
       runInAction('creating activity', () => {
         this.activityRegistry.set(activity.id, activity);
       });
+
+      history.push(`/activities/${activity.id}`);
     } catch (error) {
       console.log(error);
     } finally {
@@ -113,6 +120,8 @@ class ActivityStore {
         this.activityRegistry.set(activity.id, activity);
         this.activity = activity;
       });
+
+      history.push(`/activities/${activity.id}`);
     } catch (error) {
       console.log(error);
     } finally {

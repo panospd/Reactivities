@@ -3,7 +3,30 @@ export interface IActivity {
   title: string;
   description: string;
   category: string;
-  date: Date | null;
+  date: Date;
   city: string;
   venue: string;
+}
+
+export interface IActivityFormValues extends Partial<IActivity> {
+  time?: Date;
+}
+
+export class ActivityFormValues implements IActivityFormValues {
+  constructor(init?: IActivityFormValues) {
+    if (init && init.date) {
+      this.time = init.date;
+    }
+
+    Object.assign(this, init);
+  }
+
+  id?: string = undefined;
+  title: string = '';
+  category: string = '';
+  description: string = '';
+  date?: Date = undefined;
+  time?: Date = undefined;
+  city: string = '';
+  venue: string = '';
 }
