@@ -2,7 +2,6 @@ import React, { useState, useContext, useEffect } from 'react';
 import { Segment, Form, Button, Grid } from 'semantic-ui-react';
 import { ActivityFormValues } from '../../../app/Models/activity';
 import { v4 as uuid } from 'uuid';
-import ActivityStore from '../../../app/stores/activityStore';
 import { observer } from 'mobx-react-lite';
 import { RouteComponentProps } from 'react-router-dom';
 import { Form as FinalForm, Field } from 'react-final-form';
@@ -18,6 +17,7 @@ import {
   composeValidators,
   hasLengthGreaterThan
 } from 'revalidate';
+import { RootStoreContext } from '../../../app/stores/rootStore';
 
 const validate = combineValidators({
   title: isRequired({ message: 'The event title is required' }),
@@ -45,9 +45,9 @@ const ActivityForm: React.FC<RouteComponentProps<DetailParams>> = ({
   const [activity, setActivity] = useState(new ActivityFormValues());
   const [loading, setLoading] = useState(false);
 
-  const { createActivity, editActivity, submitting, loadActivity } = useContext(
-    ActivityStore
-  );
+  const {
+    activityStore: { createActivity, editActivity, submitting, loadActivity }
+  } = useContext(RootStoreContext);
 
   useEffect(() => {
     if (match.params.id) {
