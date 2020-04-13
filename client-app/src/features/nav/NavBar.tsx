@@ -7,7 +7,7 @@ import { RootStoreContext } from '../../app/stores/rootStore';
 const NavBar = () => {
   const rootStore = useContext(RootStoreContext);
 
-  const { isLoggedIn, user, logout } = rootStore.userStore;
+  const { user, logout } = rootStore.userStore;
 
   console.log('current user', user);
 

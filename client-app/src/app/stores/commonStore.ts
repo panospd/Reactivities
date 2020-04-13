@@ -1,5 +1,5 @@
 import { RootStore } from './rootStore';
-import { observable, action, reaction, runInAction } from 'mobx';
+import { observable, action, reaction } from 'mobx';
 
 export default class CommonStore {
   @observable token: string | null = window.localStorage.getItem('jwt');
