@@ -21,13 +21,20 @@ export const ActivityListItem: React.FC<{ activity: IActivity }> = ({
               size="tiny"
               circular
               src={host.image || '/assets/user.png'}
+              style={{ marginBottom: 3 }}
             />
             <Item.Content>
               <Item.Content>
                 <Item.Header as={Link} to={`/activities/${id}`}>
                   {title}
                 </Item.Header>
-                <Item.Description>Hosted by {host.username}</Item.Description>
+                <Item.Description>
+                  Hosted by
+                  <Link to={`/profile/${host.username}`}>
+                    {' '}
+                    {host.username}
+                  </Link>{' '}
+                </Item.Description>
                 {activity.isHost && (
                   <Item.Description>
                     <Label
