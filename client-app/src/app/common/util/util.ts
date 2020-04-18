@@ -23,10 +23,10 @@ const extractDate = (date: Date) => {
 export const setActivityProps = (activity: IActivity, user: IUser) => {
   activity.date = new Date(activity.date);
 
-  activity.isGoing = activity.attendees.some(a => a.username == user.username);
+  activity.isGoing = activity.attendees.some(a => a.username === user.username);
 
   activity.isHost = activity.attendees.some(
-    a => a.username == user.username && a.isHost
+    a => a.username === user.username && a.isHost
   );
 
   return activity;

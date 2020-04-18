@@ -11,9 +11,9 @@ interface RouteParams {
   username: string;
 }
 
-interface IPros extends RouteComponentProps<RouteParams> {}
+interface IProps extends RouteComponentProps<RouteParams> {}
 
-const ProfilePage: React.FC<IPros> = ({ match }) => {
+const ProfilePage: React.FC<IProps> = ({ match }) => {
   const rootStore = useContext(RootStoreContext);
   const { loadingProfile, profile, loadProfile } = rootStore.profileStore;
 
