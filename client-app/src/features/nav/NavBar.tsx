@@ -9,8 +9,6 @@ const NavBar = () => {
 
   const { user, logout } = rootStore.userStore;
 
-  console.log('current user', user);
-
   return (
     <Menu fixed="top" inverted>
       <Container>

@@ -1,6 +1,6 @@
 import { RootStore } from './rootStore';
 import { observable, action, runInAction, computed } from 'mobx';
-import { IProfile, IPhoto } from '../Models/profile';
+import { IProfile, IPhoto, IProfileFormValues } from '../Models/profile';
 import agent from '../api/agent';
 import { toast } from 'react-toastify';
 
@@ -102,6 +102,22 @@ export default class ProfileStore {
       runInAction(() => {
         this.loading = false;
       });
+    }
+  };
+
+  @action editProfile = async (profile: Partial<IProfile>) => {
+    try {
+      await agent.Profiles.editProfile(profile);
+
+      runInAction(() => {
+        if (profile.displayName !== this.rootStore.userStore.user!.displayName)
+          this.rootStore.userStore.user!.displayName = profile.displayName!;
+
+        this.profile = { ...this.profile!, ...profile };
+      });
+    } catch (error) {
+      console.log(error);
+      toast.error('Problem editing profile');
     }
   };
 }

@@ -11,3 +11,17 @@ export interface IPhoto {
   url: string;
   isMain: boolean;
 }
+
+export interface IProfileFormValues {
+  displayName: string;
+  bio: string;
+}
+
+export class ProfileFormValues implements IProfileFormValues {
+  constructor(init?: IProfileFormValues) {
+    Object.assign(this, init);
+  }
+
+  displayName: string = '';
+  bio: string = '';
+}
