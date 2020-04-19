@@ -1,55 +1,59 @@
 using System;
-using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Errors;
 using Application.Interfaces;
+using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 
-namespace Application.Photos
+namespace Application.Profiles
 {
-    public class SetMain
+    public class Edit
     {
         public class Command : IRequest
         {
-            public string Id { get; set; }
+            public string DisplayName { get; set; }
+            public string Bio { get; set; }
+        }
+
+        public class CommandValidator : AbstractValidator<Command>
+        {
+            public CommandValidator()
+            {
+                RuleFor(x => x.DisplayName).NotEmpty();
+            }
         }
 
         public class Handler : IRequestHandler<Command>
         {
             private readonly DataContext _context;
             private readonly IUserAccessor _userAccessor;
+
             public Handler(DataContext context, IUserAccessor userAccessor)
             {
-                _userAccessor = userAccessor;
                 _context = context;
+                _userAccessor = userAccessor;
             }
+
             public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
             {
                 var user = await _context.Users.SingleOrDefaultAsync(u => u.UserName == _userAccessor.GetCurrentUsername());
 
-                var photo = user.Photos.FirstOrDefault(p => p.Id == request.Id);
+                if (user == null)
+                    throw new RestException(HttpStatusCode.Forbidden, new { User = "You are not authorized" });
 
-                if (photo == null)
-                    throw new RestException(HttpStatusCode.NotFound, new { Photo = "Not found" });
+                user.DisplayName = request.DisplayName;
+                user.Bio = request.Bio;
 
-                if (photo.IsMain)
-                    throw new RestException(HttpStatusCode.BadRequest, new { Photo = "Photo is already set to main" });
-
-                var currentMain = user.Photos.SingleOrDefault(p => p.IsMain);
-
-                currentMain.IsMain = false;
-                photo.IsMain = true;
-
-                var success = await _context.SaveChangesAsync() > 0;
+                var success = await _context.SaveChangesAsync() >= 0;
 
                 if (success)
                     return Unit.Value;
 
-                throw new Exception("Problem saving changes");
+                throw new Exception("Problem updating profile");
             }
         }
     }
