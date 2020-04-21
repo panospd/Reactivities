@@ -6,9 +6,9 @@ import { RootStoreContext } from '../../../app/stores/rootStore';
 import { format } from 'date-fns';
 
 const ActivityList = () => {
-  const {
-    activityStore: { activitiesByDate }
-  } = useContext(RootStoreContext);
+  const rootStore = useContext(RootStoreContext);
+
+  const { activitiesByDate } = rootStore.activityStore;
 
   return (
     <React.Fragment>
