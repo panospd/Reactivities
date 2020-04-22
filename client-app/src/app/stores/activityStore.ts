@@ -1,4 +1,4 @@
-import { observable, action, computed, runInAction } from 'mobx';
+import { observable, action, computed, runInAction, reaction } from 'mobx';
 import { SyntheticEvent } from 'react';
 import { IActivity } from '../Models/activity';
 import agent from '../api/agent';
@@ -17,6 +17,18 @@ const LIMIT = 2;
 export default class ActivityStore {
   constructor(rootStore: RootStore) {
     this.rootStore = rootStore;
+
+    reaction(
+      () => this.predicate.keys(),
+      () => {
+        this.page = 0;
+        this.activityRegistry.clear();
+
+        console.log('Reaction here');
+
+        this.loadActivities();
+      }
+    );
   }
 
   rootStore: RootStore;
@@ -30,6 +42,29 @@ export default class ActivityStore {
   @observable.ref hubConnection: HubConnection | null = null;
   @observable activityCount = 0;
   @observable page = 0;
+  @observable predicate = new Map();
+
+  @action setPredicate = (predicate: string, value: string | Date) => {
+    this.predicate.clear();
+
+    if (predicate !== 'all') {
+      this.predicate.set(predicate, value);
+    }
+  };
+
+  @computed get axiosParams() {
+    const params = new URLSearchParams();
+
+    params.append('limit', LIMIT.toString());
+    params.append('offset', `${this.page ? this.page * LIMIT : 0}`);
+
+    this.predicate.forEach((value, key) => {
+      if (key === 'startDate') params.append(key, value.toISOString());
+      else params.append(key, value);
+    });
+
+    return params;
+  }
 
   @computed get totalPages() {
     return Math.ceil(this.activityCount / LIMIT);
@@ -114,8 +149,7 @@ export default class ActivityStore {
       this.loadingInitial = true;
 
       const { activities, activityCount } = await agent.Activities.list(
-        LIMIT,
-        this.page
+        this.axiosParams
       );
 
       runInAction('loading activities', () => {
