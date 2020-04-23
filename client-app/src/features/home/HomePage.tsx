@@ -7,6 +7,7 @@ import { LoginForm } from '../user/LoginForm';
 import { RegisterForm } from '../user/RegisterForm';
 
 const HomePage = () => {
+  const token = window.localStorage.getItem('jwt');
   const rootStore = useContext(RootStoreContext);
 
   const { user, isLoggedIn } = rootStore.userStore;
@@ -24,7 +25,7 @@ const HomePage = () => {
           />
           Reactivities
         </Header>
-        {isLoggedIn && user ? (
+        {isLoggedIn && user && token ? (
           <React.Fragment>
             <Header
               as="h2"
