@@ -29,9 +29,6 @@ namespace Persistence
                 new Value { Id = 3, Name = "Value 103" }
             );
 
-            builder.Entity<UserActivity>(x => x.HasKey(ua
-            => new { ua.AppUserId, ua.ActivityId }));
-
             builder.Entity<UserActivity>()
                 .HasOne(u => u.AppUser)
                 .WithMany(u => u.UserActivities)
@@ -41,6 +38,9 @@ namespace Persistence
                 .HasOne(u => u.Activity)
                 .WithMany(u => u.UserActivities)
                 .HasForeignKey(u => u.ActivityId);
+
+            builder.Entity<UserActivity>(x => x.HasKey(ua
+        => new { ua.AppUserId, ua.ActivityId }));
 
             builder.Entity<UserFollowing>(b =>
             {
