@@ -36,19 +36,8 @@ namespace API
 
         public IConfiguration Configuration { get; }
 
-
-        public void ConfigureDevelopmentServices(IServiceCollection services)
-        {
-            services.AddDbContext<DataContext>(opt =>
-            {
-                opt.UseLazyLoadingProxies();
-                opt.UseSqlite(Configuration.GetConnectionString("DefaultConnection"));
-            });
-
-            ConfigureServices(services);
-        }
-
-        public void ConfigureProductionServices(IServiceCollection services)
+        // This method gets called by the runtime. Use this method to add services to the container.
+        public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<DataContext>(opt =>
             {
@@ -56,12 +45,6 @@ namespace API
                 opt.UseMySql(Configuration.GetConnectionString("DefaultConnection"));
             });
 
-            ConfigureServices(services);
-        }
-
-        // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
-        {
             services.AddControllers();
 
             services.AddCors(opt =>
